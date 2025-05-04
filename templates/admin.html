@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - GameZone</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <header>
+        <h1>Admin Dashboard</h1>
+        <a href="/logout">Logout</a>
+    </header>
+
+    <section class="admin-section">
+        <h2>Revenue Summary</h2>
+        <p><strong>Total Earnings:</strong> ${{ total_revenue }}</p>
+        <p><strong>Total Sessions Played:</strong> {{ total_sessions }}</p>
+    </section>
+
+    <section class="admin-section">
+        <h2>User Activity</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Total Time Played (s)</th>
+                    <th>Total Spent (R)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.total_time }}</td>
+                    <td>{{ "%.2f"|format(user.total_spent) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="admin-section">
+        <h2>Manage Games</h2>
+        <form action="/admin/add_game" method="POST">
+            <input type="text" name="game_name" placeholder="New Game Name" required />
+            <button type="submit">Add Game</button>
+        </form>
+
+        <ul>
+            {% for game in games %}
+            <li>{{ game.name }} <a href="/admin/delete_game/{{ game.id }}">Delete</a></li>
+            {% endfor %}
+        </ul>
+    </section>
+
+</body>
+</html>

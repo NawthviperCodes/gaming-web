@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - GameZone</title>
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --accent-color: #ff6b6b;
+            --dark-bg: #1a1a2e;
+            --light-bg: #2a2a3e;
+            --text-color: #ffffff;
+            --text-secondary: #b8b8d4;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark-bg), var(--light-bg));
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('/api/placeholder/1920/300') center/cover;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .content {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        h2 {
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        dl {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        dt {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--text-color);
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        dt::after {
+            content: '+';
+            font-size: 1.5rem;
+            font-weight: 300;
+        }
+        
+        dt:hover {
+            background-color: rgba(255, 255, 255, 0.12);
+        }
+        
+        dd {
+            padding: 0 1rem;
+            margin-top: 0.5rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            border-left: 2px solid var(--secondary-color);
+            margin-left: 1rem;
+            font-size: 1.05rem;
+        }
+        
+        .category {
+            margin-bottom: 2.5rem;
+        }
+        
+        .category h2 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-container {
+            margin-bottom: 2rem;
+            display: flex;
+        }
+        
+        .search-container input {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px 0 0 8px;
+            background-color: rgba(255, 255, 255, 0.08);
+            color: var(--text-color);
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        .search-container button {
+            padding: 1rem 1.5rem;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .search-container button:hover {
+            opacity: 0.9;
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 1.5rem;
+                margin: 1.5rem;
+            }
+            
+            dt {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Frequently Asked Questions</h1>
+    </header>
+    <section class="content">
+        <div class="search-container">
+            <input type="text" placeholder="Search for questions...">
+            <button>Search</button>
+        </div>
+        
+        <div class="category">
+            <h2>General Questions</h2>
+            <dl>
+                <dt>How do I add coins to my account?</dt>
+                <dd>You can top up your balance using the "Top Up" buttons on the dashboard. We accept various payment methods including credit cards, PayPal, and cryptocurrency.</dd>
+
+                <dt>What games are available on GameZone?</dt>
+                <dd>We offer a wide variety of popular games like Pong, Space Invaders, Tetris, Snake, and many more. Our game library is constantly expanding with new titles being added regularly.</dd>
+
+                <dt>How do I create an account?</dt>
+                <dd>Click the "Sign Up" button in the top-right corner of the homepage. Fill in your details, verify your email address, and you're ready to start playing!</dd>
+            </dl>
+        </div>
+        
+        <div class="category">
+            <h2>Account & Billing</h2>
+            <dl>
+                <dt>How do I reset my password?</dt>
+                <dd>Click on the "Forgot Password" link on the login page. Enter your email address and follow the instructions sent to your inbox.</dd>
+
+                <dt>Is my payment information secure?</dt>
+                <dd>Absolutely! We use industry-standard encryption and security measures to protect all payment information. We never store your complete credit card details on our servers.</dd>
+                
+                <dt>Can I request a refund?</dt>
+                <dd>Refund policies vary depending on the purchase. Please contact our support team through the Contact Us page with your order details for specific refund inquiries.</dd>
+            </dl>
+        </div>
+        
+        <div class="nav-links">
+            <a href="/contact-us">Still have questions? Contact Us</a>
+            <a href="/help-center">Visit Help Center</a>
+            <a href="/">Back to Home</a>
+        </div>
+    </section>
+</body>
+</html>

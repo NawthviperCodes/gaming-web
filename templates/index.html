@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameZone - Your Ultimate Gaming Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <a href="/" class="logo">GAMEZONE</a>
+            <nav>
+                <ul>
+                    
+                    <li><a href="/games">Games</a></li>
+                    <li><a href="/tournaments">Tournament</a></li>
+                    <li><a href="/leaderboard">Leaderboard</a></li>
+                    <li><a href="/community">Community</a></li>
+                </ul>
+            </nav>
+            <div class="auth">
+                <a href="/login" class="btn login">Login</a>
+                <a href="/register" class="btn signup">Sign Up</a>
+               
+                <a href="/admin/login" class="btn back-btn">🔐 Admin Portal</a>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Elevate Your <span class="highlight">Gaming Experience</span></h1>
+            <p>Join millions of players on GameZone, where competitive gaming meets community. Play, compete, and connect with gamers from around the world.</p>
+            <div class="cta">
+                <a href="/dashboard" class="btn start">Start Playing</a>
+                <a href="#" class="btn watch-trailer"><i class="fas fa-play"></i> Watch Trailer</a>
+            </div>
+        </div>
+        <div class="hero-overlay"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2>Why Choose <span class="highlight">GameZone</span></h2>
+            <div class="feature-cards">
+                <div class="feature-card">
+                    <div class="icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3>Diverse Game Library</h3>
+                    <p>Access hundreds of games across multiple genres, from action to strategy.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3>Competitive Tournaments</h3>
+                    <p>Participate in daily, weekly, and monthly tournaments with real rewards.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Vibrant Community</h3>
+                    <p>Connect with like-minded gamers, form teams, and make new friends.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Games Preview Section -->
+    <section class="games-preview">
+        <div class="container">
+            <h2>Popular <span class="highlight">Games</span></h2>
+            <div class="game-previews">
+                <div class="game-preview">
+                    <div class="game-img"></div>
+                    <h3>Cyber Assault</h3>
+                    <p>First-person tactical shooter</p>
+                    <a href="/games/cyber-assault" class="btn play-now">Play Now</a>
+                </div>
+                <div class="game-preview">
+                    <div class="game-img"></div>
+                    <h3>Fantasy Realms</h3>
+                    <p>MMORPG adventure</p>
+                    <a href="/games/fantasy-realms" class="btn play-now">Play Now</a>
+                </div>
+                <div class="game-preview">
+                    <div class="game-img"></div>
+                    <h3>Speed Racers</h3>
+                    <p>High-octane racing simulator</p>
+                    <a href="/games/speed-racers" class="btn play-now">Play Now</a>
+                </div>
+                <div class="game-preview">
+                    <div class="game-img"></div>
+                    <h3>Puzzle Master</h3>
+                    <p>Brain-teasing challenges</p>
+                    <a href="/games/puzzle-master" class="btn play-now">Play Now</a>
+                </div>
+            </div>
+            <div class="view-all">
+                <a href="/games" class="btn view-all-btn">View All Games</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <h2>What Our <span class="highlight">Players Say</span></h2>
+            <div class="testimonial-cards">
+                <div class="testimonial-card">
+                    <div class="user-img"></div>
+                    <div class="quote">"GameZone completely transformed my gaming experience. The tournaments are exciting and the community is amazing!"</div>
+                    <div class="user-name">Alex T.</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="user-img"></div>
+                    <div class="quote">"I've won multiple tournaments here and made friends from all over the world. Best gaming platform out there!"</div>
+                    <div class="user-name">Maria K.</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="user-img"></div>
+                    <div class="quote">"The variety of games keeps me coming back. There's always something new to discover and play."</div>
+                    <div class="user-name">James L.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Start Your Gaming Journey?</h2>
+            <p>Join GameZone today and elevate your gaming experience to the next level.</p>
+            <div class="cta-buttons">
+                <a href="/register" class="btn signup-large">Sign Up Now</a>
+                <a href="/games" class="btn explore">Explore Games</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>GAMEZONE</h3>
+                    <p>Your ultimate destination for online gaming and community.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        
+                        <li><a href="games.html">Games</a></li>
+                        <li><a href="/tournaments">Tournaments</a></li>
+                        <li><a href="/leaderboard">Leaderboard</a></li>
+                        <li><a href="/community">Community</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="/help-center">Help Center</a></li>
+                        <li><a href="/faq">FAQ</a></li>
+                        <li><a href="/contact-us">Contact Us</a></li>
+                        <li><a href="/terms-of-service">Terms of Service</a></li>
+                        <li><a href="/privacy-policy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Newsletter</h3>
+                    <p>Subscribe to get the latest news and updates.</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Your email address">
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 GameZone. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

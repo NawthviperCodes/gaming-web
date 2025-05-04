@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ game_name }} - GameZone</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e2f;
+            color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            margin-top: 50px;
+        }
+        p {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #2ecc71;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #27ae60;
+        }
+        #timer {
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        let startTime = Date.now();
+        let timerInterval;
+
+        function startTimer() {
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            const elapsedTime = Math.floor((Date.now() - startTime) / 1000); // seconds
+            document.getElementById("timer").textContent = elapsedTime + "s";
+        }
+
+        function endSession() {
+            clearInterval(timerInterval); // Stop the timer when ending the session
+            const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+            window.location.href = "/end_session?time=" + elapsedTime;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            startTimer(); // Start the timer when the page loads
+        });
+    </script>
+</head>
+<body>
+    <h1>Playing {{ game_name }}</h1>
+    <p>Time Played: <span id="timer">0</span></p>
+    <button onclick="endSession()">End Session</button>
+</body>
+</html>
