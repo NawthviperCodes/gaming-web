@@ -1250,3 +1250,102 @@ main {
         font-size: 14px;
     }
 }
+
+/* ========== Tablet & Mobile (≤768px) ========== */
+@media (max-width: 768px) {
+    nav ul {
+      display: none;
+      flex-direction: column;
+      background-color: #151522;
+      position: absolute;
+      top: 70px;
+      left: 0;
+      width: 100%;
+      padding: 20px;
+    }
+  
+    .mobile-menu-btn {
+      display: block;
+    }
+  
+    .auth {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .cta {
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .hero h1 {
+      font-size: 36px;
+    }
+  
+    .hero p {
+      font-size: 16px;
+    }
+  
+    .hero .cta a {
+      padding: 10px 15px;
+      font-size: 14px;
+    }
+  
+    .about-content {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  
+    .about-img {
+      margin: 0 0 20px 0;
+    }
+  
+    .about-text h2 {
+      font-size: 28px;
+    }
+  
+    .about-text p {
+      font-size: 14px;
+    }
+  
+    footer {
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+  
+    footer p,
+    footer ul {
+      text-align: center;
+    }
+  }
+  
+  /* ========== Small Devices (≤480px) ========== */
+  @media (max-width: 480px) {
+    .hero h1 {
+      font-size: 28px;
+    }
+  
+    .hero p {
+      font-size: 14px;
+    }
+  
+    .hero .cta a {
+      font-size: 12px;
+      padding: 8px 12px;
+    }
+  
+    nav {
+      padding: 15px;
+    }
+  
+    .about-text h2 {
+      font-size: 24px;
+    }
+  
+    footer {
+      font-size: 14px;
+    }
+  }
+  
