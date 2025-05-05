@@ -165,6 +165,14 @@ def privacy_policy():
 def tournaments():
     return render_template('tournaments.html')
 
+@app.route('/games')
+def games():
+    return render_template('games.html')
+
+@app.route('/community')
+def community():
+    return render_template('community.html')
+
 @app.route('/leaderboard')
 def leaderboard():
     # Fetch top players based on coins or other metrics
