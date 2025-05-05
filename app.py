@@ -83,20 +83,6 @@ def index():
             return redirect(url_for('dashboard'))
     return render_template('index.html')
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        if User.query.filter_by(username=username).first():
-            flash("Username already exists!")
-            return redirect(url_for('register'))
-        new_user = User(username=username, password=password)
-        db.session.add(new_user)
-        db.session.commit()
-        flash("Registration successful! Please log in.")
-        return redirect(url_for('login'))
-    return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -121,24 +107,30 @@ def login():
 
     return render_template('login.html')
 
+
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
         admin = Admin.query.filter_by(username=username, password=password).first()
         if admin:
             login_user(admin)
             return redirect(url_for('admin_dashboard'))
-        else:
-            flash("Invalid admin credentials.")
+
+        flash("Invalid admin credentials.")
+        return redirect(url_for('admin_login'))
+
     return render_template('admin_login.html')
+
 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
 
 @app.route('/dashboard')
 @login_required
@@ -147,42 +139,8 @@ def dashboard():
         flash("❌ Access denied: Admins cannot access the user dashboard.")
         return redirect(url_for('admin_dashboard'))
 
-    games = Game.query.all()
-    return render_template('dashboard.html', username=current_user.username, coins=current_user.coins, games=games)
+    return render_template('dashboard.html', username=current_user.username, coins=current_user.coins)
 
-@app.route('/game')
-@login_required
-def play_game():
-    if isinstance(current_user, Admin):
-        flash("❌ Access denied: Admins only")
-        return redirect(url_for('admin_dashboard'))
-
-    game_name = request.args.get('name', 'Unknown Game')
-    return render_template('game.html', game_name=game_name)
-
-@app.route('/end_session')
-@login_required
-def end_session():
-    if isinstance(current_user, Admin):
-        flash("❌ Access denied: Admins only.")
-        return redirect(url_for('admin_dashboard'))
-
-    try:
-        time_played = int(request.args.get('time', 10))  # Default 10 seconds
-    except ValueError:
-        time_played = 10
-
-    cost = round(time_played * 0.05, 2)
-    if current_user.coins >= cost:
-        current_user.coins -= cost
-        new_session = GameSession(game_name="Unknown Game", time_played=time_played, cost=cost, user_id=current_user.id)
-        db.session.add(new_session)
-        db.session.commit()
-        flash(f"You played for {time_played}s. Deducted ${cost:.2f}. Remaining balance: ${current_user.coins:.2f}")
-    else:
-        flash("Not enough coins to play this session.")
-
-    return redirect(url_for('dashboard'))
 
 @app.route('/admin')
 @login_required
@@ -194,7 +152,6 @@ def admin_dashboard():
     total_revenue = sum(session.cost for session in GameSession.query.all())
     total_sessions = GameSession.query.count()
     users = User.query.all()
-    games = Game.query.all()
 
     user_data = []
     for user in users:
@@ -209,39 +166,24 @@ def admin_dashboard():
     return render_template('admin.html',
                            total_revenue=total_revenue,
                            total_sessions=total_sessions,
-                           users=user_data,
-                           games=games)
+                           users=user_data)
 
-@app.route('/admin/add_game', methods=['POST'])
-@login_required
-def add_game():
-    if not isinstance(current_user, Admin):
-        flash("Access denied.")
-        return redirect(url_for('index'))
 
-    game_name = request.form['game_name']
-    if Game.query.filter_by(name=game_name).first():
-        flash("Game already exists.")
-        return redirect(url_for('admin_dashboard'))
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if User.query.filter_by(username=username).first():
+            flash("Username already exists!")
+            return redirect(url_for('register'))
+        new_user = User(username=username, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        flash("Registration successful! Please log in.")
+        return redirect(url_for('login'))
+    return render_template('register.html')
 
-    new_game = Game(name=game_name)
-    db.session.add(new_game)
-    db.session.commit()
-    flash(f"Game '{game_name}' added.")
-    return redirect(url_for('admin_dashboard'))
-
-@app.route('/admin/delete_game/<int:game_id>')
-@login_required
-def delete_game(game_id):
-    if not isinstance(current_user, Admin):
-        flash("Access denied.")
-        return redirect(url_for('index'))
-
-    game = Game.query.get_or_404(game_id)
-    db.session.delete(game)
-    db.session.commit()
-    flash(f"Game '{game.name}' deleted.")
-    return redirect(url_for('admin_dashboard'))
 
 @app.route('/add_coins')
 @login_required
@@ -252,116 +194,6 @@ def add_coins():
     flash(f"${amount:.2f} added to your account. New balance: ${current_user.coins:.2f}")
     return redirect(url_for('dashboard'))
 
-@app.route('/topup', methods=['GET', 'POST'])
-@login_required
-def topup():
-    return render_template('payment.html')
-
-@app.route('/topup/<float:amount>')
-@login_required
-def topup_amount(amount):
-    coin_amount = int(amount * 10)
-
-    try:
-        checkout_session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=[{
-                'price_data': {
-                    'currency': 'usd',
-                    'product_data': {
-                        'name': f'{coin_amount} Coins',
-                    },
-                    'unit_amount': int(amount * 100),
-                },
-                'quantity': 1,
-            }],
-            mode='payment',
-            success_url=url_for('payment_success', _external=True) + '?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url=url_for('topup', _external=True),
-            metadata={'user_id': current_user.id, 'coins': coin_amount}
-        )
-        return redirect(checkout_session.url, code=303)
-    except Exception as e:
-        flash(f"Payment error: {str(e)}")
-        return redirect(url_for('dashboard'))
-
-@app.route('/process_payment', methods=['POST'])
-@login_required
-def process_payment():
-    try:
-        amount = float(request.form['amount'])
-        if amount <= 0:
-            flash("Invalid amount. Please enter a positive value.")
-            return redirect(url_for('dashboard'))
-
-        checkout_session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=[{
-                'price_data': {
-                    'currency': 'usd',
-                    'product_data': {
-                        'name': f'{amount * 10} Coins',
-                    },
-                    'unit_amount': int(amount * 100),
-                },
-                'quantity': 1,
-            }],
-            mode='payment',
-            success_url=url_for('payment_success', _external=True) + '?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url=url_for('dashboard', _external=True),
-            metadata={'user_id': current_user.id, 'coins': amount * 10}
-        )
-        return redirect(checkout_session.url, code=303)
-    except Exception as e:
-        flash(f"Error processing payment: {str(e)}")
-        return redirect(url_for('dashboard'))
-
-@app.route('/payment/success')
-@login_required
-def payment_success():
-    session_id = request.args.get('session_id')
-    session_data = stripe.checkout.Session.retrieve(session_id)
-    user_id = int(session_data.metadata.user_id)
-    coins = int(session_data.metadata.coins)
-
-    user = User.query.get(user_id)
-    user.coins += coins
-    db.session.commit()
-    flash(f"{coins} coins added to your account!")
-    return redirect(url_for('dashboard'))
-
-@app.route('/help-center')
-def help_center():
-    return render_template('help_center.html')
-
-@app.route('/faq')
-def faq():
-    return render_template('faq.html')
-
-@app.route('/contact-us')
-def contact_us():
-    return render_template('contact_us.html')
-
-@app.route('/terms-of-service')
-def terms_of_service():
-    return render_template('terms_of_service.html')
-
-@app.route('/privacy-policy')
-def privacy_policy():
-    return render_template('privacy_policy.html')
-
-@app.route('/tournaments')
-def tournaments():
-    return render_template('tournaments.html')
-
-@app.route('/leaderboard')
-def leaderboard():
-    users = User.query.order_by(User.coins.desc()).all()
-    return render_template('leaderboard.html', users=users)
-
-@app.route('/community')
-def community():
-    return render_template('community.html')
 
 # -----------------------------
 # Initialize Database
@@ -369,6 +201,8 @@ def community():
 
 with app.app_context():
     db.create_all()
+
+    # Add sample games
     if not Game.query.all():
         games = ['Pong', 'Space Invaders', 'Tetris', 'Snake']
         for name in games:
