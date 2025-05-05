@@ -5,7 +5,6 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 import urllib.parse
 import stripe
 
-
 from dotenv import load_dotenv
 import os
 
@@ -16,9 +15,6 @@ app = Flask(__name__)
 app.secret_key = os.getenv('APP_SECRET_KEY', 'fallback-secret-key-for-dev')
 
 # Stripe Config
-
-
-
 stripe_keys = {
     'secret_key': os.getenv('STRIPE_SECRET_KEY'),
     'publishable_key': os.getenv('STRIPE_PUBLISHABLE_KEY')
@@ -26,7 +22,6 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys['secret_key']
 
-# PostgreSQL Config
 # PostgreSQL Config
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///local.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -83,6 +78,8 @@ def load_user(user_id):
 @app.route('/')
 def index():
     if current_user.is_authenticated:
+        if isinstance(current_user, Admin):
+            return redirect(url_for('admin_dashboard'))
         return redirect(url_for('dashboard'))
     return render_template('index.html')
 
@@ -129,6 +126,7 @@ def admin_login():
             return redirect(url_for('admin_dashboard'))
         else:
             flash("Invalid admin credentials.")
+            return redirect(url_for('admin_login'))
     return render_template('admin_login.html')
 
 @app.route('/logout')
@@ -152,12 +150,9 @@ def dashboard():
 def help_center():
     return render_template('help_center.html')
 
-
 @app.route('/games')
 def games():
     return render_template('games.html')
-
-
 
 @app.route('/faq')
 def faq():
@@ -179,12 +174,9 @@ def privacy_policy():
 def tournaments():
     return render_template('tournaments.html')
 
-
 @app.route('/community')
 def community():
     return render_template('community.html')
-
-
 
 @app.route('/leaderboard')
 def leaderboard():
