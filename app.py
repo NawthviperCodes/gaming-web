@@ -140,9 +140,9 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    # Prevent admins from accessing the user dashboard
+    # Prevent admins from accessing user dashboard
     if isinstance(current_user, Admin):
-        flash("❌ Access denied: Admins only.")
+        flash("❌ Access denied: Admins only")
         return redirect(url_for('admin_dashboard'))
 
     games = Game.query.all()
