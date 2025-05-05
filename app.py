@@ -1,13 +1,12 @@
-import os
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+import os
 import urllib.parse
 import stripe
-
 from dotenv import load_dotenv
-import os
 
+# Load environment variables from .env (for local dev only)
 load_dotenv()
 
 # Initialize Flask app
@@ -19,13 +18,13 @@ stripe_keys = {
     'secret_key': os.getenv('STRIPE_SECRET_KEY'),
     'publishable_key': os.getenv('STRIPE_PUBLISHABLE_KEY')
 }
-
 stripe.api_key = stripe_keys['secret_key']
 
 # PostgreSQL Config
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///local.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Initialize DB
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -80,7 +79,8 @@ def index():
     if current_user.is_authenticated:
         if isinstance(current_user, Admin):
             return redirect(url_for('admin_dashboard'))
-        return redirect(url_for('dashboard'))
+        else:
+            return redirect(url_for('dashboard'))
     return render_template('index.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -103,16 +103,22 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
+        # Check if it's an admin first
         admin = Admin.query.filter_by(username=username, password=password).first()
         if admin:
             login_user(admin)
             return redirect(url_for('admin_dashboard'))
+
+        # Then check regular user
         user = User.query.filter_by(username=username, password=password).first()
         if user:
             login_user(user)
             return redirect(url_for('dashboard'))
+
         flash("Invalid username or password.")
         return redirect(url_for('login'))
+
     return render_template('login.html')
 
 @app.route('/admin/login', methods=['GET', 'POST'])
@@ -126,7 +132,6 @@ def admin_login():
             return redirect(url_for('admin_dashboard'))
         else:
             flash("Invalid admin credentials.")
-            return redirect(url_for('admin_login'))
     return render_template('admin_login.html')
 
 @app.route('/logout')
@@ -138,56 +143,18 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    # Prevent admins from accessing user dashboard
     if isinstance(current_user, Admin):
-        flash("❌ Access denied: Admins only")
+        flash("❌ Access denied: Admins cannot access the user dashboard.")
         return redirect(url_for('admin_dashboard'))
 
     games = Game.query.all()
     return render_template('dashboard.html', username=current_user.username, coins=current_user.coins, games=games)
 
-@app.route('/help-center')
-def help_center():
-    return render_template('help_center.html')
-
-@app.route('/games')
-def games():
-    return render_template('games.html')
-
-@app.route('/faq')
-def faq():
-    return render_template('faq.html')
-
-@app.route('/contact-us')
-def contact_us():
-    return render_template('contact_us.html')
-
-@app.route('/terms-of-service')
-def terms_of_service():
-    return render_template('terms_of_service.html')
-
-@app.route('/privacy-policy')
-def privacy_policy():
-    return render_template('privacy_policy.html')
-
-@app.route('/tournaments')
-def tournaments():
-    return render_template('tournaments.html')
-
-@app.route('/community')
-def community():
-    return render_template('community.html')
-
-@app.route('/leaderboard')
-def leaderboard():
-    return render_template('leaderboard.html')
-
 @app.route('/game')
 @login_required
 def play_game():
-    # Prevent admins from playing games
     if isinstance(current_user, Admin):
-        flash("❌ Access denied: Admins only.")
+        flash("❌ Access denied: Admins only")
         return redirect(url_for('admin_dashboard'))
 
     game_name = request.args.get('name', 'Unknown Game')
@@ -196,15 +163,15 @@ def play_game():
 @app.route('/end_session')
 @login_required
 def end_session():
-    # Prevent admins from ending sessions
     if isinstance(current_user, Admin):
         flash("❌ Access denied: Admins only.")
         return redirect(url_for('admin_dashboard'))
 
     try:
-        time_played = int(request.args.get('time', 10))
+        time_played = int(request.args.get('time', 10))  # Default 10 seconds
     except ValueError:
         time_played = 10
+
     cost = round(time_played * 0.05, 2)
     if current_user.coins >= cost:
         current_user.coins -= cost
@@ -214,6 +181,7 @@ def end_session():
         flash(f"You played for {time_played}s. Deducted ${cost:.2f}. Remaining balance: ${current_user.coins:.2f}")
     else:
         flash("Not enough coins to play this session.")
+
     return redirect(url_for('dashboard'))
 
 @app.route('/admin')
@@ -226,6 +194,7 @@ def admin_dashboard():
     total_revenue = sum(session.cost for session in GameSession.query.all())
     total_sessions = GameSession.query.count()
     users = User.query.all()
+    games = Game.query.all()
 
     user_data = []
     for user in users:
@@ -240,12 +209,12 @@ def admin_dashboard():
     return render_template('admin.html',
                            total_revenue=total_revenue,
                            total_sessions=total_sessions,
-                           users=user_data)
+                           users=user_data,
+                           games=games)
 
 @app.route('/admin/add_game', methods=['POST'])
 @login_required
 def add_game():
-    # Ensure only admins can add games
     if not isinstance(current_user, Admin):
         flash("Access denied.")
         return redirect(url_for('index'))
@@ -264,7 +233,6 @@ def add_game():
 @app.route('/admin/delete_game/<int:game_id>')
 @login_required
 def delete_game(game_id):
-    # Ensure only admins can delete games
     if not isinstance(current_user, Admin):
         flash("Access denied.")
         return redirect(url_for('index'))
@@ -293,6 +261,7 @@ def topup():
 @login_required
 def topup_amount(amount):
     coin_amount = int(amount * 10)
+
     try:
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],
@@ -324,6 +293,7 @@ def process_payment():
         if amount <= 0:
             flash("Invalid amount. Please enter a positive value.")
             return redirect(url_for('dashboard'))
+
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
@@ -353,11 +323,45 @@ def payment_success():
     session_data = stripe.checkout.Session.retrieve(session_id)
     user_id = int(session_data.metadata.user_id)
     coins = int(session_data.metadata.coins)
+
     user = User.query.get(user_id)
     user.coins += coins
     db.session.commit()
     flash(f"{coins} coins added to your account!")
     return redirect(url_for('dashboard'))
+
+@app.route('/help-center')
+def help_center():
+    return render_template('help_center.html')
+
+@app.route('/faq')
+def faq():
+    return render_template('faq.html')
+
+@app.route('/contact-us')
+def contact_us():
+    return render_template('contact_us.html')
+
+@app.route('/terms-of-service')
+def terms_of_service():
+    return render_template('terms_of_service.html')
+
+@app.route('/privacy-policy')
+def privacy_policy():
+    return render_template('privacy_policy.html')
+
+@app.route('/tournaments')
+def tournaments():
+    return render_template('tournaments.html')
+
+@app.route('/leaderboard')
+def leaderboard():
+    users = User.query.order_by(User.coins.desc()).all()
+    return render_template('leaderboard.html', users=users)
+
+@app.route('/community')
+def community():
+    return render_template('community.html')
 
 # -----------------------------
 # Initialize Database
