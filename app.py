@@ -227,7 +227,6 @@ def end_session():
 @app.route('/admin')
 @login_required
 def admin_dashboard():
-    # Ensure only admins can access this route
     if not isinstance(current_user, Admin):
         flash("❌ Access denied: Admins only.")
         return redirect(url_for('index'))
@@ -235,7 +234,6 @@ def admin_dashboard():
     total_revenue = sum(session.cost for session in GameSession.query.all())
     total_sessions = GameSession.query.count()
     users = User.query.all()
-    games = Game.query.all()
 
     user_data = []
     for user in users:
@@ -247,7 +245,10 @@ def admin_dashboard():
             'total_spent': total_spent
         })
 
-    return render_template('admin.html', total_revenue=total_revenue, total_sessions=total_sessions, users=user_data, games=games)
+    return render_template('admin.html',
+                           total_revenue=total_revenue,
+                           total_sessions=total_sessions,
+                           users=user_data)
 
 @app.route('/admin/add_game', methods=['POST'])
 @login_required
