@@ -27,8 +27,8 @@ stripe_keys = {
 stripe.api_key = stripe_keys['secret_key']
 
 # PostgreSQL Config
-password = urllib.parse.quote_plus("Thabo@0727")
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:{password}@localhost:2002/GamingDB'
+# PostgreSQL Config
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///local.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
