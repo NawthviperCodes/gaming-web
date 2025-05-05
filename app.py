@@ -39,10 +39,16 @@ class User(UserMixin, db.Model):
     coins = db.Column(db.Float, default=0.0)
     sessions = db.relationship('GameSession', backref='user', lazy=True)
 
+    def get_id(self):
+        return f"User:{self.id}"
+
 class Admin(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
+
+    def get_id(self):
+        return f"Admin:{self.id}"
 
 class GameSession(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -61,12 +67,12 @@ class Game(db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
-    user = User.query.get(int(user_id))
-    if user:
-        return user
-    admin = Admin.query.get(int(user_id))
-    if admin:
-        return admin
+    if user_id.startswith("User:"):
+        user_id = int(user_id.split(":")[1])
+        return User.query.get(user_id)
+    elif user_id.startswith("Admin:"):
+        user_id = int(user_id.split(":")[1])
+        return Admin.query.get(user_id)
     return None
 
 # -----------------------------
@@ -99,14 +105,17 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
         admin = Admin.query.filter_by(username=username, password=password).first()
         if admin:
             login_user(admin)
             return redirect(url_for('admin_dashboard'))
+
         user = User.query.filter_by(username=username, password=password).first()
         if user:
             login_user(user)
             return redirect(url_for('dashboard'))
+
         flash("Invalid username or password.")
         return redirect(url_for('login'))
     return render_template('login.html')
@@ -124,6 +133,7 @@ def admin_login():
             flash("Invalid admin credentials.")
     return render_template('admin_login.html')
 
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -133,11 +143,9 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    # Prevent admins from accessing the user dashboard
     if isinstance(current_user, Admin):
-        flash("❌ Access denied: Admins only.")
+        flash("❌ Access denied: Admins cannot access the user dashboard.")
         return redirect(url_for('admin_dashboard'))
-
     games = Game.query.all()
     return render_template('dashboard.html', username=current_user.username, coins=current_user.coins, games=games)
 
@@ -216,11 +224,9 @@ def end_session():
 @app.route('/admin')
 @login_required
 def admin_dashboard():
-    # Ensure only admins can access this route
     if not isinstance(current_user, Admin):
         flash("❌ Access denied: Admins only.")
         return redirect(url_for('index'))
-
     total_revenue = sum(session.cost for session in GameSession.query.all())
     total_sessions = GameSession.query.count()
     users = User.query.all()
@@ -236,7 +242,11 @@ def admin_dashboard():
             'total_spent': total_spent
         })
 
-    return render_template('admin.html', total_revenue=total_revenue, total_sessions=total_sessions, users=user_data, games=games)
+    return render_template('admin.html',
+                           total_revenue=total_revenue,
+                           total_sessions=total_sessions,
+                           users=user_data,
+                           games=games)
 
 @app.route('/admin/add_game', methods=['POST'])
 @login_required
