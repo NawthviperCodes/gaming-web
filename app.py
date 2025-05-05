@@ -13,7 +13,7 @@ load_dotenv()
 
 # Initialize Flask app
 app = Flask(__name__)
-os.getenv('APP_SECRET_KEY', 'your_secret_key_here')
+app.secret_key = os.getenv('APP_SECRET_KEY', 'fallback-secret-key-for-dev')
 
 # Stripe Config
 
