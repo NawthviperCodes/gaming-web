@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment - GameZone</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="payment-container">
+        <h1>GameZone</h1>
+        <p>Your Balance: ${{ current_user.coins }}</p>
+        <form action="/process_payment" method="POST">
+            <label for="amount">Deposit Amount:</label>
+            <input type="number" id="amount" name="amount" placeholder="Enter amount" required>
+            <button type="submit" class="btn">Add Funds</button>
+        </form>
+    </div>
+</body>
+</html>

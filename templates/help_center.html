@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center - GameZone</title>
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --accent-color: #ff6b6b;
+            --dark-bg: #1a1a2e;
+            --light-bg: #2a2a3e;
+            --text-color: #ffffff;
+            --text-secondary: #b8b8d4;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark-bg), var(--light-bg));
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('/api/placeholder/1920/300') center/cover;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .content {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        
+        .help-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .help-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .help-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
+        }
+        
+        .help-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+        
+        .help-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .help-card a {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .help-card a:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .search-section {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .search-section h2 {
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+        
+        .search-bar {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-bar input {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 50px 0 0 50px;
+            background-color: rgba(255, 255, 255, 0.08);
+            color: var(--text-color);
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        .search-bar button {
+            padding: 1rem 2rem;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 0 50px 50px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        
+        .top-issues {
+            margin-bottom: 3rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .top-issues h2 {
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .issues-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .issue-item {
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .issue-item:hover {
+            background-color: rgba(255, 255, 255, 0.12);
+            transform: translateY(-3px);
+        }
+        
+        .issue-item a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .issue-item a::before {
+            content: '→';
+            color: var(--accent-color);
+        }
+        
+        .contact-section {
+            text-align: center;
+            margin-top: 3rem;
+        }
+        
+        .contact-section a {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+        
+        .contact-section a:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 1.5rem;
+                margin: 1.5rem;
+            }
+            
+            .help-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Help Center</h1>
+    </header>
+    <section class="content">
+        <div class="search-section">
+            <h2>How can we help you?</h2>
+            <div class="search-bar">
+                <input type="text" placeholder="Search for help topics...">
+                <button>Search</button>
+            </div>
+        </div>
+        
+        <div class="help-grid">
+            <div class="help-card">
+                <div class="card-icon">📋</div>
+                <h3>FAQ</h3>
+                <p>Browse our collection of frequently asked questions to find quick answers to common problems.</p>
+                <a href="/faq">Visit FAQ</a>
+            </div>
+            
+            <div class="help-card">
+                <div class="card-icon">🎮</div>
+                <h3>Game Guides</h3>
+                <p>Learn how to play and master all the games available on GameZone with our detailed guides.</p>
+                <a href="/guides">View Guides</a>
+            </div>
+            
+            <div class="help-card">
+                <div class="card-icon">💬</div>
+                <h3>Contact Support</h3>
+                <p>Can't find what you're looking for? Our support team is ready to assist you with any issues.</p>
+                <a href="/contact-us">Contact Us</a>
+            </div>
+        </div>
+        
+        <div class="top-issues">
+            <h2>Common Issues</h2>
+            <div class="issues-list">
+                <div class="issue-item">
+                    <a href="/faq#password-reset">I forgot my password</a>
+                </div>
+                <div class="issue-item">
+                    <a href="/faq#payment-issues">Payment not going through</a>
+                </div>
+                <div class="issue-item">
+                    <a href="/faq#game-loading">Game not loading properly</a>
+                </div>
+                <div class="issue-item">
+                    <a href="/faq#account-verification">Account verification problems</a>
+                </div>
+                <div class="issue-item">
+                    <a href="/faq#coin-balance">Coins not showing in balance</a>
+                </div>
+                <div class="issue-item">
+                    <a href="/faq#leaderboard">Leaderboard score issues</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="contact-section">
+            <p>Still need help? Our support team is available 24/7.</p>
+            <a href="/contact-us">Contact Support</a>
+        </div>
+        
+        <div class="nav-links">
+            <a href="/privacy-policy">Privacy Policy</a>
+            <a href="/terms-of-service">Terms of Service</a>
+            <a href="/">Back to Home</a>
+        </div>
+    </section>
+</body>
+</html>

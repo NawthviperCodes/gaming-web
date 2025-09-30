@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusGaming | Community Hub</title>
+    <style>
+        :root {
+            --primary: #4ade80;
+            --secondary: #6366f1;
+            --dark: #111827;
+            --light: #f9fafb;
+            --card-bg: #1f2937;
+            --header-bg: #111827;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        a {
+            text-decoration: none;
+            color: var(--light);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        header {
+            background-color: var(--header-bg);
+            padding: 1rem 0;
+            border-bottom: 3px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        nav ul li a {
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+        
+        .active {
+            color: var(--primary);
+            position: relative;
+        }
+        
+        .active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary);
+            border-radius: 3px;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--dark);
+        }
+        
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 222, 128, 0.3);
+        }
+        
+        .btn-outline {
+            border: 2px solid var(--primary);
+            background-color: transparent;
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: var(--dark);
+        }
+        
+        .hero {
+            height: 400px;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1200/400') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: 0 0 10px 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 1.5rem;
+            opacity: 0.9;
+        }
+        
+        .featured {
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 5px;
+            height: 25px;
+            background-color: var(--primary);
+            border-radius: 3px;
+        }
+        
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-img {
+            height: 180px;
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .game-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(99, 102, 241, 0.9);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .card-body {
+            padding: 1.2rem;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #9ca3af;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+        }
+        
+        .card-description {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1.2rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            font-size: 0.9rem;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .community-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .stat-card h3 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .stat-card p {
+            color: #9ca3af;
+        }
+        
+        .discussion-list {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+        
+        .discussion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid #374151;
+        }
+        
+        .discussion-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid #374151;
+            transition: background-color 0.3s;
+        }
+        
+        .discussion-item:hover {
+            background-color: #283548;
+        }
+        
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: #3d4e67;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--light);
+        }
+        
+        .discussion-content {
+            flex: 1;
+        }
+        
+        .discussion-meta {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 0.3rem;
+            color: #9ca3af;
+            font-size: 0.85rem;
+        }
+        
+        .user-name {
+            color: var(--primary);
+            margin-right: auto;
+        }
+        
+        .discussion-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .discussion-preview {
+            color: #9ca3af;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .reaction-bar {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+        }
+        
+        .reaction {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: #9ca3af;
+        }
+        
+        footer {
+            background-color: var(--header-bg);
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+            border-top: 1px solid #374151;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-col h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1.2rem;
+            color: var(--primary);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: #9ca3af;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-link {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #374151;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .social-link:hover {
+            background-color: var(--primary);
+            color: var(--dark);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid #374151;
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+        
+        .events {
+            margin-bottom: 3rem;
+        }
+        
+        .event-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .event-date {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: var(--dark);
+            text-align: center;
+            padding: 0.5rem;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .hero {
+                height: 300px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .discussion-item {
+                flex-direction: column;
+            }
+            
+            .user-avatar {
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <span>NexusGaming</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <a href="#" class="btn btn-outline">Log In</a>
+                <a href="#" class="btn btn-primary">Sign Up</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Join Our Gaming Community</h1>
+            <p>Connect with 125,000+ gamers, share your gaming moments, discuss strategies, and participate in tournaments.</p>
+            <a href="#" class="btn btn-primary">Become a Member</a>
+        </div>
+    </section>
+
+    <div class="container">
+        <section class="community-stats">
+            <div class="stat-card">
+                <h3>125K+</h3>
+                <p>Active Members</p>
+            </div>
+            <div class="stat-card">
+                <h3>950+</h3>
+                <p>Daily Discussions</p>
+            </div>
+            <div class="stat-card">
+                <h3>78</h3>
+                <p>Monthly Events</p>
+            </div>
+            <div class="stat-card">
+                <h3>24/7</h3>
+                <p>Community Support</p>
+            </div>
+        </section>
+
+        <section class="featured">
+            <h2 class="section-title">Featured Discussions</h2>
+            <div class="discussion-list">
+                <div class="discussion-header">
+                    <h3>Hot Topics</h3>
+                    <a href="#" class="btn btn-primary">New Post</a>
+                </div>
+                
+                <div class="discussion-item">
+                    <div class="user-avatar">KL</div>
+                    <div class="discussion-content">
+                        <div class="discussion-meta">
+                            <span class="user-name">KrakenLord</span>
+                            <span>2 hours ago</span>
+                            <span>Elden Ring</span>
+                        </div>
+                        <h4 class="discussion-title">Best builds for Shadow of the Erdtree DLC?</h4>
+                        <p class="discussion-preview">Just started the DLC and struggling with some of the new bosses. Anyone found any particularly strong builds or strategies?</p>
+                        <div class="reaction-bar">
+                            <span class="reaction">👍 124</span>
+                            <span class="reaction">💬 47</span>
+                            <span class="reaction">👁️ 1.2k</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="discussion-item">
+                    <div class="user-avatar">RS</div>
+                    <div class="discussion-content">
+                        <div class="discussion-meta">
+                            <span class="user-name">RocketSniper</span>
+                            <span>5 hours ago</span>
+                            <span>League of Legends</span>
+                        </div>
+                        <h4 class="discussion-title">Patch 13.10 Meta Discussion - Who's top tier now?</h4>
+                        <p class="discussion-preview">With the recent changes to jungle pathing and item adjustments, which champions do you think will rise to the top?</p>
+                        <div class="reaction-bar">
+                            <span class="reaction">👍 98</span>
+                            <span class="reaction">💬 36</span>
+                            <span class="reaction">👁️ 876</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="discussion-item">
+                    <div class="user-avatar">VP</div>
+                    <div class="discussion-content">
+                        <div class="discussion-meta">
+                            <span class="user-name">VoidPixel</span>
+                            <span>Yesterday</span>
+                            <span>Hardware</span>
+                        </div>
+                        <h4 class="discussion-title">RTX 5090 vs. RX 9900XT - Worth the upgrade?</h4>
+                        <p class="discussion-preview">Been thinking about upgrading my GPU. The new gen looks impressive but is it worth the investment right now?</p>
+                        <div class="reaction-bar">
+                            <span class="reaction">👍 215</span>
+                            <span class="reaction">💬 93</span>
+                            <span class="reaction">👁️ 2.4k</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="discussion-item">
+                    <div class="user-avatar">NS</div>
+                    <div class="discussion-content">
+                        <div class="discussion-meta">
+                            <span class="user-name">NinjaStream</span>
+                            <span>2 days ago</span>
+                            <span>Announcements</span>
+                        </div>
+                        <h4 class="discussion-title">Community Tournament - $5000 Prize Pool!</h4>
+                        <p class="discussion-preview">We're excited to announce our next community tournament starting next week. Sign ups are open now!</p>
+                        <div class="reaction-bar">
+                            <span class="reaction">👍 312</span>
+                            <span class="reaction">💬 78</span>
+                            <span class="reaction">👁️ 4.5k</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="featured">
+            <h2 class="section-title">Active Gaming Groups</h2>
+            <div class="cards">
+                <div class="card">
+                    <div class="card-img">
+                        <img src="/api/placeholder/300/180" alt="FPS Legends" />
+                        <span class="game-tag">FPS</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">FPS Legends</h3>
+                        <div class="card-meta">
+                            <span>8,249 members</span>
+                            <span>Very Active</span>
+                        </div>
+                        <p class="card-description">A community for competitive FPS players. We host weekly tournaments and aim training sessions.</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <span class="stat">👥 120 online</span>
+                        </div>
+                        <a href="#" class="btn btn-primary">Join</a>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-img">
+                        <img src="/api/placeholder/300/180" alt="RPG Adventurers" />
+                        <span class="game-tag">RPG</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">RPG Adventurers</h3>
+                        <div class="card-meta">
+                            <span>5,782 members</span>
+                            <span>Active</span>
+                        </div>
+                        <p class="card-description">For fans of story-rich RPGs. We discuss quests, builds, and lore from all your favorite games.</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <span class="stat">👥 87 online</span>
+                        </div>
+                        <a href="#" class="btn btn-primary">Join</a>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-img">
+                        <img src="/api/placeholder/300/180" alt="Strategy Masters" />
+                        <span class="game-tag">Strategy</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Strategy Masters</h3>
+                        <div class="card-meta">
+                            <span>3,421 members</span>
+                            <span>Active</span>
+                        </div>
+                        <p class="card-description">From 4X to RTS, we analyze and discuss all strategy games. Monthly tournaments and coaching.</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <span class="stat">👥 63 online</span>
+                        </div>
+                        <a href="#" class="btn btn-primary">Join</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="events">
+            <h2 class="section-title">Upcoming Events</h2>
+            <div class="cards">
+                <div class="card event-card">
+                    <div class="event-date">MAY 10, 2025</div>
+                    <div class="card-img">
+                        <img src="/api/placeholder/300/180" alt="Apex Legends Tournament" />
+                        <span class="game-tag">Apex Legends</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Season 23 Kickoff Tournament</h3>
+                        <p class="card-description">Compete in our trios tournament to celebrate the new season launch. Top teams win exclusive skins and credits!</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>289 registered</span>
+                        <a href="#" class="btn btn-primary">Register</a>
+                    </div>
+                </div>
+                
+                <div class="card event-card">
+                    <div class="event-date">MAY 15, 2025</div>
+                    <div class="card-img">
+                        <img src="/api/placeholder/300/180" alt="Dev Q&A" />
+                        <span class="game-tag">Special Event</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Developer Q&A Session</h3>
+                        <p class="card-description">Join us for a live Q&A with the lead developers from Starfield. Ask questions and get insider info!</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>572 interested</span>
+                        <a href="#" class="btn btn-primary">Remind Me</a>
+                    </div>
+                </div>
+                
+                <div class="card event-card">
+                    <div class="event-date">MAY 22, 2025</div>
+                    <div class="card-img">
+                        <img src="/api/placeholder/300/180" alt="Charity Stream" />
+                        <span class="game-tag">Charity</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">24-Hour Charity Marathon</h3>
+                        <p class="card-description">Join our community streamers for a 24-hour gaming marathon. All donations go to Child's Play charity.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>143 participating</span>
+                        <a href="#" class="btn btn-primary">Participate</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>NexusGaming</h4>
+                    <p>The premier community for gamers worldwide. Connect, compete, and level up your gaming experience.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">X</a>
+                        <a href="#" class="social-link">F</a>
+                        <a href="#" class="social-link">T</a>
+                        <a href="#" class="social-link">D</a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Community</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Forums</a></li>
+                        <li><a href="#">Discord Server</a></li>
+                        <li><a href="#">Find Players</a></li>
+                        <li><a href="#">Tournaments</a></li>
+                        <li><a href="#">Teams</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Game Guides</a></li>
+                        <li><a href="#">Tech Support</a></li>
+                        <li><a href="#">Build Guides</a></li>
+                        <li><a href="#">Patch Notes</a></li>
+                        <li><a href="#">Downloads</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press Kit</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 NexusGaming. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - GameZone</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="dashboard">
+    <header>
+        <div class="user-info">
+            <h1>Welcome, {{ username }}</h1>
+            <div class="balance">Balance: ${{ coins }}</div>
+        </div>
+        <a href="/logout" class="logout-btn">Logout</a>
+    </header>
+
+    <main>
+        <section class="game-section">
+            <h2>Available Games</h2>
+            <div class="games">
+                {% for game in games %}
+                <div class="game-card">
+                    <h3 class="game-title">{{ game.name }}</h3>
+                    <button onclick="window.location.href='/game?name={{ game.name }}'" class="play-btn">Play Game</button>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="top-up-section">
+            <h2>Top Up Your Balance</h2>
+            <div class="top-up-buttons">
+                <a href="/topup?amount=5" class="top-up-btn bronze">Top Up $5</a>
+                <a href="/topup?amount=10" class="top-up-btn silver">Top Up $10</a>
+                <a href="/topup?amount=20" class="top-up-btn gold">Top Up $20</a>
+                <a href="/topup?amount=50" class="top-up-btn platinum">Top Up $50</a>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
