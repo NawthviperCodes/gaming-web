@@ -1,8 +1,8 @@
 # Gaming Konsol
 
-## [View the Live Demo](https://gaming-web-fqyx.onrender.com/)
+## [View the Live Demo](https://gaming-konsol.onrender.com/)
 
-**Live application:** https://gaming-web-fqyx.onrender.com/
+**Live application:** https://gaming-konsol.onrender.com/
 
 > A custom gaming console management system — designed as a software-first solution to explore how gaming centers can operate **without constant human intervention**.
 
