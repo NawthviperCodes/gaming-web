@@ -24,15 +24,15 @@
             </div>
 
             <div id="game-stage" class="game-stage" aria-live="polite">
-                <canvas id="snake-canvas" width="360" height="360"></canvas>
-                <button id="reaction-target" class="reaction-target" type="button" aria-label="Tap target"></button>
-                <div id="memory-board" class="memory-board"></div>
+                <canvas id="snake-canvas" width="360" height="360" hidden></canvas>
+                <button id="reaction-target" class="reaction-target" type="button" aria-label="Tap target" hidden></button>
+                <div id="memory-board" class="memory-board" hidden></div>
                 <div id="start-panel" class="start-panel">
                     <button id="start-game" class="btn start">Start game</button>
                 </div>
             </div>
 
-            <div id="touch-controls" class="touch-controls" aria-label="Game controls">
+            <div id="touch-controls" class="touch-controls" aria-label="Game controls" hidden>
                 <button data-direction="up" aria-label="Move up">▲</button>
                 <div>
                     <button data-direction="left" aria-label="Move left">◀</button>
