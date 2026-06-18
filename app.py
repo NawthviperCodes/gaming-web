@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from sqlalchemy import text
 import urllib.parse
 import stripe
 from dotenv import load_dotenv
+from datetime import datetime, timedelta
 import os
 
 # Load environment variables from .env (for local dev only)
@@ -64,6 +65,20 @@ class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
 
+class ActiveGame(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
+    game_name = db.Column(db.String(100), nullable=False)
+    last_seen = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+class PlayResult(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    game_name = db.Column(db.String(100), nullable=False)
+    score = db.Column(db.Integer, default=0)
+    time_played = db.Column(db.Integer, default=0)
+    played_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
 # -----------------------------
 # Flask-Login Setup
 # -----------------------------
@@ -92,6 +107,39 @@ def index():
 def health():
     db.session.execute(text('SELECT 1'))
     return {'status': 'ok'}
+
+GAME_LIBRARY = {
+    'snake': {
+        'name': 'Neon Snake',
+        'description': 'Guide the snake, collect energy, and avoid the walls.',
+        'category': 'Arcade',
+        'icon': '🐍',
+    },
+    'reaction': {
+        'name': 'Reaction Tap',
+        'description': 'Tap the glowing target as quickly as possible.',
+        'category': 'Reflex',
+        'icon': '⚡',
+    },
+    'memory': {
+        'name': 'Memory Match',
+        'description': 'Match all pairs using as few moves as possible.',
+        'category': 'Puzzle',
+        'icon': '🧠',
+    },
+}
+
+@app.route('/games')
+def games_library():
+    return render_template('games.html', games=GAME_LIBRARY)
+
+@app.route('/games/<slug>')
+@login_required
+def game_by_slug(slug):
+    game = GAME_LIBRARY.get(slug)
+    if not game:
+        return redirect(url_for('games_library'))
+    return render_template('game.html', game=game, game_slug=slug)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -193,8 +241,68 @@ def play_game():
         flash("❌ Access denied: Admins only.")
         return redirect(url_for('admin_dashboard'))
 
-    game_name = request.args.get('name', 'Unknown Game')
-    return render_template('game.html', game_name=game_name)
+    requested = request.args.get('name', '').lower()
+    slug = next(
+        (key for key, game in GAME_LIBRARY.items() if key == requested or game['name'].lower() == requested),
+        'snake'
+    )
+    return redirect(url_for('game_by_slug', slug=slug))
+
+@app.post('/api/game/heartbeat')
+@login_required
+def game_heartbeat():
+    payload = request.get_json(silent=True) or {}
+    game_slug = payload.get('game')
+    game = GAME_LIBRARY.get(game_slug)
+    if not game:
+        return jsonify({'error': 'Unknown game'}), 400
+
+    active = ActiveGame.query.filter_by(user_id=current_user.id).first()
+    if not active:
+        active = ActiveGame(user_id=current_user.id, game_name=game['name'])
+        db.session.add(active)
+    active.game_name = game['name']
+    active.last_seen = datetime.utcnow()
+    db.session.commit()
+    return jsonify({'status': 'playing'})
+
+@app.post('/api/game/finish')
+@login_required
+def finish_game():
+    payload = request.get_json(silent=True) or {}
+    game_slug = payload.get('game')
+    game = GAME_LIBRARY.get(game_slug)
+    if not game:
+        return jsonify({'error': 'Unknown game'}), 400
+
+    score = max(0, int(payload.get('score', 0)))
+    time_played = max(1, min(int(payload.get('time_played', 1)), 7200))
+    db.session.add(PlayResult(
+        user_id=current_user.id,
+        game_name=game['name'],
+        score=score,
+        time_played=time_played,
+    ))
+    db.session.add(GameSession(
+        game_name=game['name'],
+        time_played=time_played,
+        cost=0,
+        user_id=current_user.id,
+    ))
+    ActiveGame.query.filter_by(user_id=current_user.id).delete()
+    db.session.commit()
+    return jsonify({'status': 'saved', 'score': score})
+
+@app.get('/api/active-players')
+def active_players():
+    cutoff = datetime.utcnow() - timedelta(seconds=35)
+    ActiveGame.query.filter(ActiveGame.last_seen < cutoff).delete()
+    db.session.commit()
+    players = ActiveGame.query.filter(ActiveGame.last_seen >= cutoff).all()
+    return jsonify({
+        'count': len(players),
+        'games': [player.game_name for player in players],
+    })
 
 @app.route('/end_session')
 @login_required

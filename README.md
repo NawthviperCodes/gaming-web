@@ -26,6 +26,9 @@ The vision is to **minimize human overhead** while ensuring a seamless player ex
 * 🕹️ **Session Management** — start and stop gaming sessions with a simple interface.
 * 🏪 **Gaming Store Management** — track games and sessions digitally.
 * 📊 **Revenue Tracking** — payments and sessions linked in real time for transparent reporting.
+* 🎮 **Playable Browser Games** — Snake, Reaction Tap, and Memory Match work on desktop and mobile.
+* 📱 **Responsive Interface** — navigation, game cards, dashboards, and controls adapt to small screens.
+* 🟢 **Live Player Tracking** — heartbeat events show whether authenticated users are actively playing.
 
 *(The original concept used Raspberry Pi & coin acceptors, but our implementation focused on a full software-based solution using Python + Stripe.)*
 

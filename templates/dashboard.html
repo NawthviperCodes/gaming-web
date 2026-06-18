@@ -17,14 +17,12 @@
 
     <main>
         <section class="game-section">
-            <h2>Available Games</h2>
+            <h2>Playable Game Library</h2>
+            <p>Play real JavaScript games and save your scores and session time.</p>
             <div class="games">
-                {% for game in games %}
-                <div class="game-card">
-                    <h3 class="game-title">{{ game.name }}</h3>
-                    <button onclick="window.location.href='/game?name={{ game.name }}'" class="play-btn">Play Game</button>
-                </div>
-                {% endfor %}
+                <div class="game-card"><h3>🐍 Neon Snake</h3><a href="/games/snake" class="play-btn">Play</a></div>
+                <div class="game-card"><h3>⚡ Reaction Tap</h3><a href="/games/reaction" class="play-btn">Play</a></div>
+                <div class="game-card"><h3>🧠 Memory Match</h3><a href="/games/memory" class="play-btn">Play</a></div>
             </div>
         </section>
 

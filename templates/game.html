@@ -2,67 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ game_name }} - GameZone</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1e1e2f;
-            color: #fff;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-        h1 {
-            margin-top: 50px;
-        }
-        p {
-            margin: 20px 0;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #2ecc71;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: #27ae60;
-        }
-        #timer {
-            font-size: 24px;
-            font-weight: bold;
-        }
-    </style>
-    <script>
-        let startTime = Date.now();
-        let timerInterval;
-
-        function startTimer() {
-            timerInterval = setInterval(updateTimer, 1000);
-        }
-
-        function updateTimer() {
-            const elapsedTime = Math.floor((Date.now() - startTime) / 1000); // seconds
-            document.getElementById("timer").textContent = elapsedTime + "s";
-        }
-
-        function endSession() {
-            clearInterval(timerInterval); // Stop the timer when ending the session
-            const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-            window.location.href = "/end_session?time=" + elapsedTime;
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            startTimer(); // Start the timer when the page loads
-        });
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{{ game.name }} - GameZone</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body>
-    <h1>Playing {{ game_name }}</h1>
-    <p>Time Played: <span id="timer">0</span></p>
-    <button onclick="endSession()">End Session</button>
+<body class="play-page" data-game="{{ game_slug }}">
+    <header class="play-header">
+        <a href="/games" class="back-link">← Library</a>
+        <div>
+            <strong>{{ game.name }}</strong>
+            <span id="play-state">Ready</span>
+        </div>
+        <div class="score-pill">Score <strong id="score">0</strong></div>
+    </header>
+
+    <main class="play-main">
+        <section class="game-shell">
+            <div class="game-instructions">
+                <h1>{{ game.icon }} {{ game.name }}</h1>
+                <p>{{ game.description }}</p>
+            </div>
+
+            <div id="game-stage" class="game-stage" aria-live="polite">
+                <canvas id="snake-canvas" width="360" height="360"></canvas>
+                <button id="reaction-target" class="reaction-target" type="button" aria-label="Tap target"></button>
+                <div id="memory-board" class="memory-board"></div>
+                <div id="start-panel" class="start-panel">
+                    <button id="start-game" class="btn start">Start game</button>
+                </div>
+            </div>
+
+            <div id="touch-controls" class="touch-controls" aria-label="Game controls">
+                <button data-direction="up" aria-label="Move up">▲</button>
+                <div>
+                    <button data-direction="left" aria-label="Move left">◀</button>
+                    <button data-direction="down" aria-label="Move down">▼</button>
+                    <button data-direction="right" aria-label="Move right">▶</button>
+                </div>
+            </div>
+
+            <div class="play-actions">
+                <span>Time: <strong id="timer">0s</strong></span>
+                <button id="finish-game" type="button" class="btn login">Finish & save</button>
+            </div>
+            <p id="game-message" class="game-message"></p>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='games.js') }}"></script>
 </body>
 </html>
