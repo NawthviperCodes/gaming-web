@@ -1,6 +1,8 @@
-# 🎮 Gaming Konsol
+# Gaming Konsol
 
-👉 [Live Demo](https://gaming-web-fqyx.onrender.com)
+## [View the Live Demo](https://gaming-web-fqyx.onrender.com/)
+
+**Live application:** https://gaming-web-fqyx.onrender.com/
 
 > A custom gaming console management system — designed as a software-first solution to explore how gaming centers can operate **without constant human intervention**.
 
@@ -36,6 +38,27 @@ The vision is to **minimize human overhead** while ensuring a seamless player ex
 * **Stripe API** — payment gateway integration
 * **SQLite / PostgreSQL** — for storing session and payment data
 * **HTML / CSS / JS** — lightweight frontend
+
+---
+
+## Deployment
+
+The production app runs on Render with a PostgreSQL database hosted on Neon.
+Configuration is supplied through environment variables; database credentials
+and API keys are never committed to the repository.
+
+Required variables:
+
+* `DATABASE_URL`
+* `APP_SECRET_KEY`
+* `ADMIN_USERNAME`
+* `ADMIN_PASSWORD`
+
+Stripe payments additionally require `STRIPE_SECRET_KEY` and
+`STRIPE_PUBLISHABLE_KEY`.
+
+The `/health` endpoint verifies that the application can connect to its
+database.
 
 ---
 

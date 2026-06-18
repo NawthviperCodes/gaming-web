@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from sqlalchemy import text
 import urllib.parse
 import stripe
 from dotenv import load_dotenv
@@ -21,8 +22,16 @@ stripe_keys = {
 stripe.api_key = stripe_keys['secret_key']
 
 # PostgreSQL Config
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///local.db')
+database_url = os.getenv('DATABASE_URL', 'sqlite:///local.db')
+if database_url.startswith('postgres://'):
+    database_url = database_url.replace('postgres://', 'postgresql://', 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_pre_ping': True,
+    'pool_recycle': 300,
+}
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
@@ -78,6 +87,11 @@ def index():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
     return render_template('index.html')
+
+@app.route('/health')
+def health():
+    db.session.execute(text('SELECT 1'))
+    return {'status': 'ok'}
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -353,11 +367,17 @@ def payment_success():
 
 with app.app_context():
     db.create_all()
+
+    admin_username = os.getenv('ADMIN_USERNAME')
+    admin_password = os.getenv('ADMIN_PASSWORD')
+    if admin_username and admin_password and not Admin.query.filter_by(username=admin_username).first():
+        db.session.add(Admin(username=admin_username, password=admin_password))
+
     if not Game.query.all():
         games = ['Pong', 'Space Invaders', 'Tetris', 'Snake']
         for name in games:
             db.session.add(Game(name=name))
-        db.session.commit()
+    db.session.commit()
 
 # -----------------------------
 # Run App
