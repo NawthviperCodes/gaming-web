@@ -8,7 +8,7 @@
 
 ---
 
-## 📌 Project Vision
+## Project Vision
 
 Traditional gaming centers rely heavily on staff to manage game sessions, payments, and revenue tracking. Our project, **Gaming Konsol**, reimagines this process by creating an **automated system** where:
 
@@ -20,21 +20,21 @@ The vision is to **minimize human overhead** while ensuring a seamless player ex
 
 ---
 
-## 🎯 Features
+##  Features
 
-* 💳 **Digital Payments with Stripe** — secure, fast, and cashless transactions.
-* 🕹️ **Session Management** — start and stop gaming sessions with a simple interface.
-* 🏪 **Gaming Store Management** — track games and sessions digitally.
-* 📊 **Revenue Tracking** — payments and sessions linked in real time for transparent reporting.
-* 🎮 **Playable Browser Games** — Snake, Reaction Tap, and Memory Match work on desktop and mobile.
-* 📱 **Responsive Interface** — navigation, game cards, dashboards, and controls adapt to small screens.
-* 🟢 **Live Player Tracking** — heartbeat events show whether authenticated users are actively playing.
+* **Digital Payments with Stripe** — secure, fast, and cashless transactions.
+* **Session Management** — start and stop gaming sessions with a simple interface.
+*  **Gaming Store Management** — track games and sessions digitally.
+*  **Revenue Tracking** — payments and sessions linked in real time for transparent reporting.
+*  **Playable Browser Games** — Snake, Reaction Tap, and Memory Match work on desktop and mobile.
+*  **Responsive Interface** — navigation, game cards, dashboards, and controls adapt to small screens.
+*  **Live Player Tracking** — heartbeat events show whether authenticated users are actively playing.
 
 *(The original concept used Raspberry Pi & coin acceptors, but our implementation focused on a full software-based solution using Python + Stripe.)*
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 * **Python** — backend logic
 * **Flask (or FastAPI if used)** — for web-based control
@@ -65,7 +65,7 @@ database.
 
 ---
 
-## 🚀 How It Works
+##  How It Works
 
 1. **User logs in / signs up** to access the system.
 2. **Selects a game session** and duration.
@@ -75,15 +75,15 @@ database.
 
 ---
 
-## 💡 Problem Solved
+##  Problem Solved
 
-* ❌ No need for coin-operated hardware or human staff to manage revenue.
-* ✅ Cashless and digital-first approach makes the system more scalable.
-* ✅ Easy to integrate with existing gaming centers as a **plug-and-play software solution**.
+*  No need for coin-operated hardware or human staff to manage revenue.
+* Cashless and digital-first approach makes the system more scalable.
+*  Easy to integrate with existing gaming centers as a **plug-and-play software solution**.
 
 ---
 
-## 📂 Repository Structure
+##  Repository Structure
 
 ```
 gaming-konsol/
@@ -98,23 +98,23 @@ gaming-konsol/
 
 ---
 
-## 🔮 Future Enhancements
+##  Future Enhancements
 
-* ⌛ Add session timers visible to players.
-* 📱 Create a mobile-friendly UI.
-* 🎮 Integrate with real hardware for hybrid operation (Raspberry Pi + Stripe).
-* 🧾 Auto-generate receipts and invoices for players.
+*  Add session timers visible to players.
+*  Create a mobile-friendly UI.
+*  Integrate with real hardware for hybrid operation (Raspberry Pi + Stripe).
+*  Auto-generate receipts and invoices for players.
 
 ---
 
-## 👥 Team Contribution
+##  Team Contribution
 
 This project was developed as part of a **university project presentation session with industry exposure**.
 Our team focused on **the software side** of the concept, showing that the entire model could run **digitally with Python + Stripe payments** without specialized hardware.
 
 ---
 
-## 📬 Contact
+##  Contact
 
 For questions, collaborations, or improvements:
 
